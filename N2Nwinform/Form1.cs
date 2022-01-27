@@ -44,13 +44,18 @@ namespace N2Nwinform
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if(button1.Text == "连接")
+            System.Console.WriteLine("This is Done1!");
+            if (button1.Text == "连接")
             {
-                button2.Enabled = true;
-                button1.Text = "重启";
+                System.Console.WriteLine("This is Done2!");
                 n2Nclient = new N2Nclient(addr_textbox.Text, port_textbox.Text
                     , textBox1.Text, textBox2.Text, textBox3.Text);
-                n2Nclient.Connect_to_server();
+                
+                if(n2Nclient.Connect_to_server())
+                {
+                    button2.Enabled = true;
+                    button1.Text = "重启";
+                }
             }
             else if(button1.Text is "重启")
             {

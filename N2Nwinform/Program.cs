@@ -33,19 +33,14 @@ namespace N2Nwinform
         public N2Nclient(string server_ip, string server_port,
             string network_name, string network_secret, string private_ip)
         {
-            dataStruct.server_ip = server_ip;
-            dataStruct.server_port = server_port;
-            dataStruct.network_name = network_name;
-            dataStruct.network_name = network_secret;
-            dataStruct.private_ip = private_ip;
+            dataStruct = new DataStruct(server_ip, server_port, network_name, network_secret, private_ip);
         }
-        public void Connect_to_server()
+        public bool Connect_to_server()
         {
-
             isConnected = true;
             string full_cmd = String.Format(".\\edge_v2.exe -c {0} -k {1} -a {2} -f -l {3}:{4} -r"
                 , dataStruct.network_name, dataStruct.network_secret, dataStruct.private_ip, dataStruct.server_ip, dataStruct.server_port);
-            process = new Process();
+            
             /*if (File.Exists(exefile))
             {
                 // params 为 string 类型的参数，多个参数以空格分隔，如果某个参数为空，可以传入””
@@ -60,6 +55,7 @@ namespace N2Nwinform
             */
             try
             {
+                process = new Process();
                 if (!File.Exists(exefile))
                 {
                     throw new FileNotFoundException(exefile);
@@ -68,10 +64,12 @@ namespace N2Nwinform
                 startInfo.Verb = "runas";
                 process.StartInfo = startInfo;
                 process.Start();
+                return true;
             }
             catch (FileNotFoundException file)
             {
-
+                System.Console.WriteLine("No File Exists!");
+                return false;
             }
         }
         public void close_connection()
