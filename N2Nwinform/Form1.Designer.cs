@@ -70,6 +70,7 @@ namespace N2Nwinform
             this.addr_textbox.Name = "addr_textbox";
             this.addr_textbox.Size = new System.Drawing.Size(319, 35);
             this.addr_textbox.TabIndex = 2;
+            this.addr_textbox.TextChanged += new System.EventHandler(this.addr_textbox_TextChanged);
             // 
             // label1
             // 
@@ -118,6 +119,8 @@ namespace N2Nwinform
             // textBox1
             // 
             this.textBox1.Location = new System.Drawing.Point(229, 181);
+            this.textBox1.MaximumSize = new System.Drawing.Size(143, 35);
+            this.textBox1.MinimumSize = new System.Drawing.Size(143, 35);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(143, 35);
             this.textBox1.TabIndex = 8;
@@ -143,21 +146,21 @@ namespace N2Nwinform
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(308, 250);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(142, 24);
+            this.label6.Size = new System.Drawing.Size(0, 24);
             this.label6.TabIndex = 11;
-            this.label6.Text = "192.168.55.";
             // 
             // textBox3
             // 
-            this.textBox3.Location = new System.Drawing.Point(444, 239);
+            this.textBox3.Location = new System.Drawing.Point(296, 239);
             this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(57, 35);
+            this.textBox3.Size = new System.Drawing.Size(207, 35);
             this.textBox3.TabIndex = 12;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 24F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(891, 524);
             this.Controls.Add(this.textBox3);
             this.Controls.Add(this.label6);

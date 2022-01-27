@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+
 
 namespace N2Nwinform
 {
@@ -24,18 +26,25 @@ namespace N2Nwinform
     public class N2Nclient
     {
         //private string SPnum;
-        //sudo edge -c mynetwork -k mysecretpass -a 192.168.100.1 -f -l supernode.ntop.org:7777 -r
-        private string server_ip; 
-        private string server_port;
-        private string network_name; //网络名，相当于mynetwork
-        private string network_secret; //网络密码，相当于mysecretpass
-        private string private_ip; //网络ip，在同一个网络通过此ip来通讯，一般是192.168.55.x
+        private DataStruct dataStruct;
+        private bool isConnected = false;
         string exefile = @".\edge_v2.exe";
         Process process;
-        public void Connect_to_server(int specialNum,int server)
+        public N2Nclient(string server_ip, string server_port,
+            string network_name, string network_secret, string private_ip)
         {
-            string full_cmd = String.Format(".\edge_v2.exe -c {0} -k {1} -a {2} -f -l {3}:{4} -r"
-                ,network_name,network_secret,private_ip,server_ip,server_port);
+            dataStruct.server_ip = server_ip;
+            dataStruct.server_port = server_port;
+            dataStruct.network_name = network_name;
+            dataStruct.network_name = network_secret;
+            dataStruct.private_ip = private_ip;
+        }
+        public void Connect_to_server()
+        {
+
+            isConnected = true;
+            string full_cmd = String.Format(".\\edge_v2.exe -c {0} -k {1} -a {2} -f -l {3}:{4} -r"
+                , dataStruct.network_name, dataStruct.network_secret, dataStruct.private_ip, dataStruct.server_ip, dataStruct.server_port);
             process = new Process();
             /*if (File.Exists(exefile))
             {
@@ -51,11 +60,11 @@ namespace N2Nwinform
             */
             try
             {
-                if(!File.Exists(exefile))
+                if (!File.Exists(exefile))
                 {
-                    throw FileNotFoundException(exefile);
+                    throw new FileNotFoundException(exefile);
                 }
-                ProcessStartInfo startInfo = new ProcessStartInfo(exefile,full_cmd);
+                ProcessStartInfo startInfo = new ProcessStartInfo(exefile, full_cmd);
                 startInfo.Verb = "runas";
                 process.StartInfo = startInfo;
                 process.Start();
@@ -68,6 +77,82 @@ namespace N2Nwinform
         public void close_connection()
         {
             process.Kill();
+        }
+    }
+    public class LocalDataSync
+    {
+        private string jsonFile_name = "config.json";
+        private string jsonFile_addr;
+        private string json_string;
+        private DataStruct datastruct;
+        public LocalDataSync()
+        {
+            jsonFile_addr = Application.StartupPath + "//" + jsonFile_name;
+            if (!System.IO.File.Exists(jsonFile_addr))
+            {
+                datastruct = new DataStruct("aliyun.yan2sleep.me", "10086", "bugxia", "123456", "192.168.55.101");
+                using (System.IO.StreamWriter outputFile = new StreamWriter(jsonFile_addr))
+                {
+                    json_string = JsonConvert.SerializeObject(datastruct, Formatting.Indented);
+                    System.Console.WriteLine("Write json_string:" + json_string);
+                    outputFile.WriteLine(json_string);
+                    outputFile.Close();
+                }
+            }
+            else
+            {
+                using (System.IO.StreamReader inputFile = new StreamReader(jsonFile_addr))
+                {
+                    json_string = inputFile.ReadToEnd();
+                    System.Console.WriteLine("Read json_string:" + json_string);
+                    datastruct = JsonConvert.DeserializeObject<DataStruct>(json_string);
+                    inputFile.Close();
+
+                }
+            }
+
+        }
+        public DataStruct get_datastruct()
+        {
+            return this.datastruct;
+        }
+        public int sync(DataStruct dataStruct)
+        {
+            try
+            {
+                using (System.IO.StreamWriter outputFile = new StreamWriter(jsonFile_addr))
+                {
+                    json_string = JsonConvert.SerializeObject(dataStruct, Formatting.Indented);
+                    System.Console.WriteLine("Write json_string:" + json_string);
+                    outputFile.WriteLine(json_string);
+                    outputFile.Close();
+                }
+                return 1;
+            }
+            catch
+            {
+                return 0;
+            }
+            
+        }
+    }
+    [Serializable]
+    public class DataStruct
+    {
+        //sudo edge -c mynetwork -k mysecretpass -a 192.168.100.1 -f -l supernode.ntop.org:7777 -r
+        public string server_ip { get; set; }
+        public string server_port { get; set; }
+        public string network_name { get; set; } //网络名，相当于mynetwork
+        public string network_secret { get; set; } //网络密码，相当于mysecretpass
+        public string private_ip { get; set; } //网络ip，在同一个网络通过此ip来通讯，一般是192.168.55.x
+        public DataStruct(string server_ip, string server_port, 
+            string network_name, string network_secret, string private_ip)
+        {
+            this.server_ip = server_ip;
+            this.server_port = server_port;
+            this.network_name = network_name;
+            this.network_secret = network_secret; 
+            this.private_ip = private_ip;
         }
     }
 }

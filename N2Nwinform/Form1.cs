@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace N2Nwinform
 {
     public partial class Form1 : Form
@@ -22,7 +23,23 @@ namespace N2Nwinform
         private void Form1_Load(object sender, EventArgs e)
         {
             button2.Enabled = false;
-            n2Nclient = new N2Nclient();
+            this.MaximizeBox = false;
+            LocalDataSync localDataSync = new LocalDataSync();
+            /*
+                textbox对应：
+                server_ip: addr_textbox
+                server_port: port_textbox
+                network_name: textBox1
+                network_secret: textBox2
+                private_ip: textBox3
+             */
+            DataStruct ds = localDataSync.get_datastruct();
+            addr_textbox.Text = ds.server_ip;
+            port_textbox.Text = ds.server_port;
+            textBox1.Text = ds.network_name;
+            textBox2.Text = ds.network_secret;
+            textBox3.Text = ds.private_ip;
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -31,6 +48,9 @@ namespace N2Nwinform
             {
                 button2.Enabled = true;
                 button1.Text = "重启";
+                n2Nclient = new N2Nclient(addr_textbox.Text, port_textbox.Text
+                    , textBox1.Text, textBox2.Text, textBox3.Text);
+                n2Nclient.Connect_to_server();
             }
             else if(button1.Text is "重启")
             {
@@ -52,6 +72,11 @@ namespace N2Nwinform
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void addr_textbox_TextChanged(object sender, EventArgs e)
         {
 
         }
