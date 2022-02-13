@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Newtonsoft.Json;
@@ -38,9 +39,9 @@ namespace N2Nwinform
         public bool Connect_to_server()
         {
             isConnected = true;
-            string full_cmd = String.Format(".\\edge_v2.exe -c {0} -k {1} -a {2} -f -l {3}:{4} -r"
+            string full_cmd = String.Format(" -c {0} -k {1} -a {2} -l {3}:{4} -r"
                 , dataStruct.network_name, dataStruct.network_secret, dataStruct.private_ip, dataStruct.server_ip, dataStruct.server_port);
-            
+            Console.WriteLine("full_cmd is " + full_cmd);
             /*if (File.Exists(exefile))
             {
                 // params 为 string 类型的参数，多个参数以空格分隔，如果某个参数为空，可以传入””
@@ -61,8 +62,11 @@ namespace N2Nwinform
                     throw new FileNotFoundException(exefile);
                 }
                 ProcessStartInfo startInfo = new ProcessStartInfo(exefile, full_cmd);
+                //startInfo.StandardOutputEncoding = System.Text.Encoding.UTF8;
                 startInfo.Verb = "runas";
                 process.StartInfo = startInfo;
+                
+                
                 process.Start();
                 return true;
             }
@@ -74,7 +78,14 @@ namespace N2Nwinform
         }
         public void close_connection()
         {
-            process.Kill();
+            try
+            {
+                process.Kill();
+            }
+            catch(InvalidOperationException ex)
+            {
+                Console.WriteLine("Already Exit!");
+            }
         }
     }
     public class LocalDataSync

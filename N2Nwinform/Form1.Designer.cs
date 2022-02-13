@@ -60,7 +60,7 @@ namespace N2Nwinform
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(170, 58);
             this.button2.TabIndex = 1;
-            this.button2.Text = "重启";
+            this.button2.Text = "终止";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
